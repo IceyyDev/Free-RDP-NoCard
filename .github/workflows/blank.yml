@@ -11,8 +11,8 @@ jobs:
         run: |
           Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server' -name "fDenyTSConnections" -Value 0
           Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
-          net user iceyy qwe123zx /add
-          net localgroup administrators iceyy /add
+          net user iceyy qwe123zx || net user iceyy qwe123zx /add
+          net localgroup administrators iceyy || echo User already in admin group
 
       - name: 🌩️ Install Cloudflared
         run: |
@@ -24,4 +24,6 @@ jobs:
 
       - name: 📋 Show Login Info
         run: |
-          echo 🌐
+          echo 🌐 Use the tunnel URL from logs
+          echo 👤 Username: iceyy
+          echo 🔐 Password: qwe123zx
