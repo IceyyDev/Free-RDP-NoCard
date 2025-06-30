@@ -1,35 +1,22 @@
-name: Free-RDP-NoCard
+name: Avica
 
 on:
   workflow_dispatch:
 
 jobs:
   build:
+    name: Start Building...
     runs-on: windows-latest
+    timeout-minutes: 360
+    
     steps:
-      - name: 🔐 Enable RDP & Create User
+      - name: Downloading & Installing Essentials
         run: |
-          Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server' -name "fDenyTSConnections" -Value 0
-          Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
-          
-          # Check if user exists, if not, create it
-          if (!(net user Prashant1)) {
-            net user Prashant1 Qwe123zx#@ /add
-          }
+          Invoke-WebRequest -Uri "https://gitlab.com/raposabrty/pcrdp/-/raw/main/Downloads.bat" -OutFile "Downloads.bat"
+          cmd /c Downloads.bat
 
-          # Check if user is in admin group before adding
-          net localgroup administrators | findstr /C:"Prashant1" >nul || net localgroup administrators Prashant1 /add
-          
-      - name: 🌩️ Install Cloudflared
-        run: |
-          iwr -outf cloudflared.exe https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-windows-amd64.exe
-          
-      - name: 🚪 Start Tunnel
-        run: |
-          Start-Process cloudflared.exe -ArgumentList "tunnel --url rdp://localhost:3389" -NoNewWindow
+      - name: Show Website
+        run: cmd /c show.bat
 
-      - name: 📋 Show Login Info
-        run: |
-          echo 🌐 Use the tunnel URL from logs
-          echo 👤 Username: Prashant1
-          echo 🔐 Password: Qwe123zx#@
+      - name: Time Counter
+        run: cmd /c loop.bat
